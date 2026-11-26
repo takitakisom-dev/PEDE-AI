@@ -19,7 +19,9 @@ button.cx.ativo{background:linear-gradient(90deg,var(--acc),var(--acc2));border-
 button.pausado{background:linear-gradient(90deg,#ef4444,#f97316)}
 button.liberado{background:linear-gradient(90deg,#22c55e,#14b8a6)}
 button.ouro{background:linear-gradient(90deg,#eab308,#f97316);color:#111}
-input{width:100%;padding:13px;border-radius:12px;border:1px solid #444;background:#111;color:#fff;margin:6px 0;font-size:15px}
+button.escolher{width:auto;padding:8px 14px;font-size:14px;background:linear-gradient(90deg,#22c55e,#14b8a6);white-space:nowrap}
+input,textarea{width:100%;padding:13px;border-radius:12px;border:1px solid #444;background:#111;color:#fff;margin:6px 0;font-size:15px}
+textarea{min-height:70px;resize:vertical}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid button{font-size:14px;padding:18px 8px;background:#262640;border:1px solid #ffffff15}
 .grid button b{display:block;font-size:22px}
@@ -44,29 +46,30 @@ input{width:100%;padding:13px;border-radius:12px;border:1px solid #444;backgroun
 .qr-box.pb{background:#fff;border:2px solid #111}
 .qr-box.colorido{background:linear-gradient(135deg,#22c55e,#a855f7,#ec4899);color:#fff}
 .qr-box.colorido img{border:6px solid #fff;border-radius:12px}
+.recado-box{background:#fef08a;color:#111;padding:12px;border-radius:12px;margin:8px 0;font-size:14px}
+.passo{background:#2a2a3d;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800}
 @media print{ body *{visibility:hidden} #printArea, #printArea *{visibility:visible} #printArea{position:absolute;left:0;top:0;width:100%} }
 </style>
 </head>
 <body>
 <div id="alertaNovo" class="hidden" onclick="fecharAlerta()">🔔 NOVO PEDIDO!<br><span id="alertaTexto" style="font-size:15px"></span><br><small>Clique para fechar</small></div>
 
-<!-- 🔐 LOGIN -->
 <div id="login">
 <div class="topo"><h1>🎤 PEDE <span>AÍ</span></h1><p>Apoie o músico dê sua caixinha ❤️🎸🎤</p></div>
 <div class="card center"><h3>Quem é você?</h3>
 <button onclick="entrarPublico()">🎵 SOU PÚBLICO<br><span style="font-weight:400;font-size:13px">Quero pedir música</span></button>
-<button class="sec" onclick="mostrarLoginDono()">🎤 SOU MÚSICO / DONO<br><span style="font-weight:400;font-size:13px">Entrar no meu menu</span></button>
-<button class="sec" onclick="mostrarCadastro()">✨ SOU MÚSICO NOVO - QUERO COMPRAR / CRIAR MINHA CONTA</button>
+<button class="sec" onclick="mostrarLoginDono()">🎤 SOU MÚSICO / DONO</button>
+<button class="sec" onclick="mostrarCadastro()">✨ SOU MÚSICO NOVO - CRIAR MINHA CONTA</button>
 <div id="boxDono" class="hidden" style="text-align:left;margin-top:10px">
 <input id="loginUser" placeholder="Seu usuário - ex: ANDRE">
 <input id="loginPass" type="password" placeholder="Sua senha">
 <button onclick="fazerLogin()">ENTRAR 🔐</button>
-<p style="font-size:12px;opacity:.8;text-align:center">Mestre: ANDRE / PEDEAI123<br>Cada músico entra com o usuário e senha DELE.</p>
+<p style="font-size:12px;opacity:.8;text-align:center">Mestre: ANDRE / PEDEAI123</p>
 <p id="erroLogin" style="color:#f87171;font-weight:800;text-align:center"></p>
 </div>
 <div id="boxCadastro" class="hidden" style="text-align:left;margin-top:10px">
-<h3 style="text-align:center">✨ Criar minha conta de músico</h3>
-<input id="cadNome" placeholder="Seu nome artístico - ex: João Silva">
+<h3 style="text-align:center">✨ Criar minha conta</h3>
+<input id="cadNome" placeholder="Seu nome artístico">
 <input id="cadUser" placeholder="Crie um usuário - ex: JOAO">
 <input id="cadPass" type="password" placeholder="Crie uma senha">
 <input id="cadCidade" placeholder="Sua cidade">
@@ -78,7 +81,6 @@ input{width:100%;padding:13px;border-radius:12px;border:1px solid #444;backgroun
 <div id="app" class="hidden">
 <div class="topo"><h1>🎤 PEDE <span>AÍ</span></h1><p id="nomeTopo"></p><p><span class="badge" id="statusLoja">🟢 Pedidos ABERTOS</span></p><p id="quemLogado" style="font-size:13px;opacity:.85"></p></div>
 <div id="boxPausar" class="hidden"><button id="btnPausar" onclick="alternarPausar()">⏸️ PAUSAR PEDIDOS</button></div>
-
 <div id="menuDono">
 <h3 style="text-align:center">MENU DO DONO ⭐</h3>
 <div id="boxMestre" class="hidden"><button class="ouro" onclick="abrir('mestre')">👑 PAINEL MESTRE<br><span style="font-size:13px;font-weight:400">Ver quantos músicos compraram</span></button></div>
@@ -98,17 +100,28 @@ input{width:100%;padding:13px;border-radius:12px;border:1px solid #444;backgroun
 <button class="sec" onclick="verComoPublico()">👀 VER COMO O PÚBLICO VÊ</button>
 <button class="sec" onclick="sair()">🚪 SAIR / VOLTAR PRO LOGIN</button>
 </div>
-
 <div id="tela" class="hidden"><button class="sec" onclick="voltar()">⬅ VOLTAR AO MENU</button><div id="conteudo"></div></div>
 
+<!-- PÚBLICO - ORDEM NOVA: MÚSICA PRIMEIRO -->
 <div id="publico" class="hidden">
 <button class="sec" onclick="voltarPublico()">⬅ VOLTAR</button>
 <div class="card center"><img id="pFoto" class="foto hidden"><h2 id="pNome" style="margin:4px 0">🎤 Músico</h2><p id="pInfo"></p><p><span class="badge" id="pAberto"></span></p></div>
-<div class="card"><h3 style="margin-top:0">🎵 Peça sua música</h3>
-<input id="nomeCliente" placeholder="Seu nome">
-<input id="musicaPedido" placeholder="Qual música? Ex: Evidências">
+
+<div class="card">
+<h3 style="margin-top:0">🎵 Peça sua música</h3>
+<p><span class="passo">1️⃣ PASSO 1 - MÚSICA PRIMEIRO</span></p>
+<input id="musicaPedido" placeholder="🎵 Qual música? Escolhe lá embaixo no repertório ou digita aqui">
+<p style="font-size:13px;opacity:.85">👇 Ou clica na setinha ➡️ no repertório aqui embaixo, que ela já vem pra cá!</p>
+
+<p><span class="passo">2️⃣ PASSO 2 - SEU NOME</span></p>
+<input id="nomeCliente" placeholder="🙋 Seu nome">
+
+<p><span class="passo">3️⃣ PASSO 3 - RECADO / OFERECER (opcional, mas o povo adora!)</span></p>
+<input id="paraQuem" placeholder="🎁 Oferecer para quem? Ex: Pra minha esposa Maria (pode deixar em branco)">
+<textarea id="recado" placeholder="💌 Seu recado aqui... Ex: Feliz aniversário, amor! Essa música é pra você ❤️&#10;Ex: Toca essa pra animar a mesa 5!"></textarea>
+
 <div class="frase">Apoie o músico dê sua caixinha ❤️🎸🎤<small>Sua contribuição mantém a música viva 🎶<br>Caixinha NÃO é obrigatória, pode pedir sem contribuir.</small></div>
-<p><b>Escolha sua caixinha (opcional):</b></p>
+<p><b>4️⃣ PASSO 4 - Caixinha (opcional):</b></p>
 <div class="cx-grid">
 <button class="cx" onclick="selCx(this,'5')">R$ 5</button>
 <button class="cx" onclick="selCx(this,'10')">R$ 10</button>
@@ -118,19 +131,16 @@ input{width:100%;padding:13px;border-radius:12px;border:1px solid #444;backgroun
 <button class="cx" onclick="selCx(this,'LIVRE')">💰 LIVRE</button>
 </div>
 <div id="livreBox" class="hidden"><input id="valorLivre" type="number" placeholder="Digite o valor livre, ex: 7"></div>
-<button onclick="pedirMusica()">PEDIR MÚSICA 🎶</button><p id="msgPedido"></p></div>
-<div class="card"><h3 style="margin-top:0">🎵 Repertório</h3><div id="listaPublico"></div></div>
+<button onclick="pedirMusica()">PEDIR MÚSICA 🎶</button><p id="msgPedido"></p>
+</div>
+
+<div class="card"><h3 style="margin-top:0">🎵 Repertório - Clica na setinha ➡️ pra escolher</h3><div id="listaPublico"></div></div>
 </div>
 </div>
 
 <script>
-// 👥 SISTEMA MULTI-MÚSICO
 let musicos=JSON.parse(localStorage.getItem('pedeai_musicos')||'[]');
-// Cria você como primeiro músico se não existir
-if(!musicos.find(m=>m.usuario==='ANDRE')){
- musicos.push({usuario:'ANDRE',senha:'PEDEAI123',nome:'ANDRÉ TAKI',cidade:'Caraguatatuba São Paulo',estilo:'MPB, ROCK NACIONAL',zap:'12992209787',foto:'',pix:'',nomePix:'',musicas:[],pedidos:[],pedidasHoje:[],aberto:true,tema:0,som:true,dataCadastro:new Date().toLocaleDateString()});
- localStorage.setItem('pedeai_musicos',JSON.stringify(musicos));
-}
+if(!musicos.find(m=>m.usuario==='ANDRE')){ musicos.push({usuario:'ANDRE',senha:'PEDEAI123',nome:'ANDRÉ TAKI',cidade:'Caraguatatuba São Paulo',estilo:'MPB, ROCK NACIONAL',zap:'12992209787',foto:'',pix:'',nomePix:'',musicas:[{n:'METADE',a:'ADRIANA CALCANHOTO'},{n:'ELEVADOR',a:'ANA CAROLINA'},{n:'EVIDÊNCIAS',a:'CHITÃOZINHO E XORORÓ'}],pedidos:[],pedidasHoje:[],aberto:true,tema:0,som:true,dataCadastro:new Date().toLocaleDateString()}); localStorage.setItem('pedeai_musicos',JSON.stringify(musicos)); }
 let usuarioAtual=localStorage.getItem('pedeai_atual')||'';
 let dados=musicos.find(m=>m.usuario===usuarioAtual)||musicos[0]||{};
 let souDono=false; let souMestre=false; let caixinha=''; let fotoTemp=dados.foto||''; let ultimoTotal=(dados.pedidos||[]).length; let versaoQR='simples';
@@ -142,71 +152,61 @@ function norm(s){return (s||'').toLowerCase().trim().replace(/\s+/g,' ');}
 function jaPedidaHoje(m){ return (dados.pedidasHoje||[]).some(x=>norm(x)===norm(m)); }
 function mostrarLoginDono(){document.getElementById('boxDono').classList.remove('hidden');document.getElementById('boxCadastro').classList.add('hidden');}
 function mostrarCadastro(){document.getElementById('boxCadastro').classList.remove('hidden');document.getElementById('boxDono').classList.add('hidden');}
-function cadastrarMusico(){
- let nome=document.getElementById('cadNome').value.trim(); let user=document.getElementById('cadUser').value.trim().toUpperCase(); let pass=document.getElementById('cadPass').value.trim(); let cidade=document.getElementById('cadCidade').value.trim();
- if(!nome||!user||!pass) return document.getElementById('erroCad').innerText='Preenche nome, usuário e senha!';
- if(musicos.find(m=>m.usuario===user)) return document.getElementById('erroCad').innerText='Esse usuário já existe, escolhe outro!';
- let novo={usuario:user,senha:pass,nome:nome,cidade:cidade,estilo:'',zap:'',foto:'',pix:'',nomePix:'',musicas:[],pedidos:[],pedidasHoje:[],aberto:true,tema:0,som:true,dataCadastro:new Date().toLocaleDateString()};
- musicos.push(novo); salvarTodos(); alert('Conta criada! Agora entra com seu usuário e senha: '+user); mostrarLoginDono(); document.getElementById('loginUser').value=user;
-}
-function fazerLogin(){
- let u=document.getElementById('loginUser').value.trim().toUpperCase(); let p=document.getElementById('loginPass').value.trim();
- let achado=musicos.find(m=>m.usuario===u && m.senha===p);
- if(!achado) return document.getElementById('erroLogin').innerText='❌ Usuário ou senha errado!';
- usuarioAtual=u; dados=achado; souDono=true; souMestre=(u==='ANDRE'); fotoTemp=dados.foto||''; ultimoTotal=(dados.pedidos||[]).length; salvarTodos(); entrarDono();
-}
+function cadastrarMusico(){ let nome=document.getElementById('cadNome').value.trim(); let user=document.getElementById('cadUser').value.trim().toUpperCase(); let pass=document.getElementById('cadPass').value.trim(); let cidade=document.getElementById('cadCidade').value.trim(); if(!nome||!user||!pass) return document.getElementById('erroCad').innerText='Preenche nome, usuário e senha!'; if(musicos.find(m=>m.usuario===user)) return document.getElementById('erroCad').innerText='Esse usuário já existe!'; let novo={usuario:user,senha:pass,nome:nome,cidade:cidade,estilo:'',zap:'',foto:'',pix:'',nomePix:'',musicas:[],pedidos:[],pedidasHoje:[],aberto:true,tema:0,som:true,dataCadastro:new Date().toLocaleDateString()}; musicos.push(novo); salvarTodos(); alert('Conta criada! Entra com: '+user); mostrarLoginDono(); document.getElementById('loginUser').value=user; }
+function fazerLogin(){ let u=document.getElementById('loginUser').value.trim().toUpperCase(); let p=document.getElementById('loginPass').value.trim(); let achado=musicos.find(m=>m.usuario===u && m.senha===p); if(!achado) return document.getElementById('erroLogin').innerText='❌ Usuário ou senha errado!'; usuarioAtual=u; dados=achado; souDono=true; souMestre=(u==='ANDRE'); fotoTemp=dados.foto||''; ultimoTotal=(dados.pedidos||[]).length; salvarTodos(); entrarDono(); }
 function entrarPublico(){ souDono=false; souMestre=false; if(!usuarioAtual){ usuarioAtual='ANDRE'; dados=musicos[0]; } document.getElementById('login').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); verComoPublico(); }
 function entrarDono(){ document.getElementById('login').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); document.getElementById('menuDono').classList.remove('hidden'); document.getElementById('boxPausar').classList.remove('hidden'); document.getElementById('boxMestre').classList.toggle('hidden',!souMestre); document.getElementById('quemLogado').innerText='Logado como: '+(dados.nome||'')+' (@'+dados.usuario+')'+(souMestre?' 👑 MESTRE':''); atualizarTopo(); atualizarBtnPausar(); }
 function sair(){ document.getElementById('app').classList.add('hidden'); document.getElementById('login').classList.remove('hidden'); document.getElementById('menuDono').classList.add('hidden'); document.getElementById('publico').classList.add('hidden'); document.getElementById('tela').classList.add('hidden'); document.getElementById('boxPausar').classList.add('hidden'); }
 function alternarPausar(){ dados.aberto=!dados.aberto; salvar(); atualizarBtnPausar(); alert(dados.aberto?'✅ Pedidos LIBERADOS!':'⏸️ Pedidos PAUSADOS!'); }
 function atualizarBtnPausar(){ let b=document.getElementById('btnPausar'); if(!b) return; if(dados.aberto){ b.innerText='⏸️ PAUSAR PEDIDOS'; b.className='liberado'; } else{ b.innerText='▶️ LIBERAR PEDIDOS - ESTÁ PAUSADO'; b.className='pausado'; } }
-function mostrarAlertaPedido(pedido){ document.getElementById('alertaTexto').innerText=(pedido.cliente||'')+' pediu: '+(pedido.musica||'')+' - Caixinha: '+(pedido.caixinha||''); document.getElementById('alertaNovo').classList.remove('hidden'); tocarSom(); setTimeout(()=>{ document.getElementById('alertaNovo').classList.add('hidden'); },10000); }
+function mostrarAlertaPedido(pedido){ document.getElementById('alertaTexto').innerText=(pedido.cliente||'')+' pediu: '+(pedido.musica||'')+(pedido.paraQuem?' - Pra: '+pedido.paraQuem:'')+(pedido.recado?' - Recado: '+pedido.recado:'')+' - Caixinha: '+(pedido.caixinha||''); document.getElementById('alertaNovo').classList.remove('hidden'); tocarSom(); setTimeout(()=>{ document.getElementById('alertaNovo').classList.add('hidden'); },12000); }
 function fecharAlerta(){ document.getElementById('alertaNovo').classList.add('hidden'); }
 function tocarSom(){ if(!dados.som) return; try{ let ctx=new (window.AudioContext||window.webkitAudioContext)(); let t=ctx.currentTime; [0,0.35,0.7,1.05].forEach(d=>{ let o=ctx.createOscillator(),g=ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value=880; o.type='sine'; g.gain.setValueAtTime(0.0001,t+d); g.gain.exponentialRampToValueAtTime(0.4,t+d+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+d+0.3); o.start(t+d); o.stop(t+d+0.32); }); }catch(e){} if(navigator.vibrate) navigator.vibrate([300,100,300,100,300,100,300]); }
-function testarAlerta(){ mostrarAlertaPedido({cliente:'Teste',musica:'Evidências',caixinha:'R$ 10'}); }
+function testarAlerta(){ mostrarAlertaPedido({cliente:'Teste',musica:'Evidências',paraQuem:'Maria',recado:'Feliz aniversário amor!',caixinha:'R$ 10'}); }
 setInterval(()=>{ let lista=JSON.parse(localStorage.getItem('pedeai_musicos')||'[]'); let atual=lista.find(m=>m.usuario===usuarioAtual); if(atual && atual.pedidos && atual.pedidos.length>ultimoTotal){ mostrarAlertaPedido(atual.pedidos[atual.pedidos.length-1]); ultimoTotal=atual.pedidos.length; if(document.getElementById('listaPed')){ dados=atual; renderPedidos(); } } },3000);
 function atualizarTopo(){document.getElementById('nomeTopo').innerText=dados.nome?('🎤 '+dados.nome+' • '+(dados.cidade||'')):'Seu show, seu repertório, sua caixinha';document.getElementById('statusLoja').innerText=dados.aberto?'🟢 Pedidos ABERTOS':'🔴 Pedidos PAUSADOS';document.getElementById('pAberto').innerText=dados.aberto?'🟢 Aceitando pedidos':'🔴 Pedidos PAUSADOS no momento';aplicarTema();atualizarBtnPausar();}
 const temas=[['#0b0b14','#22c55e','#a855f7'],['#000','#e11d48','#f97316'],['#0a1a3a','#3b82f6','#22c55e'],['#1a0a2e','#a855f7','#ec4899'],['#042f2e','#14b8a6','#22c55e'],['#3a0a0a','#f97316','#eab308'],['#111','#eab308','#f97316'],['#fff','#ec4899','#a855f7'],['#0f172a','#f43f5e','#f97316'],['#022c22','#84cc16','#14b8a6']];
 function aplicarTema(){let t=temas[dados.tema||0];document.documentElement.style.setProperty('--bg',t[0]);document.documentElement.style.setProperty('--acc',t[1]);document.documentElement.style.setProperty('--acc2',t[2]);document.body.style.color=t[0]=='#fff'?'#111':'#fff';}
 function selCx(btn,val){document.querySelectorAll('.cx').forEach(b=>b.classList.remove('ativo'));btn.classList.add('ativo');caixinha=val;document.getElementById('livreBox').classList.toggle('hidden',val!=='LIVRE');}
 function lerFoto(input){ let f=input.files[0]; if(!f) return; let r=new FileReader(); r.onload=()=>{ fotoTemp=r.result; let img=document.getElementById('prevFoto'); if(img){img.src=fotoTemp; img.classList.remove('hidden');} }; r.readAsDataURL(f); }
+
+// ➡️ SETINHA - ESCOLHER MÚSICA DO REPERTÓRIO
+function escolherMusica(nomeMusica){
+ document.getElementById('musicaPedido').value=nomeMusica;
+ document.getElementById('musicaPedido').style.border='2px solid #22c55e';
+ document.getElementById('musicaPedido').scrollIntoView({behavior:'smooth',block:'center'});
+ document.getElementById('nomeCliente').focus();
+ alert('✅ Você escolheu: '+nomeMusica+'\nAgora coloca seu nome e seu recado!');
+}
 function qrLink(){ return location.href.split('?')[0]; }
 function qrImg(){ return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(qrLink()); }
 function trocarVersaoQR(v){ versaoQR=v; renderQR(); }
 function renderQR(){ let box=document.getElementById('qrPreview'); if(!box) return; let nome=dados.nome||'Músico'; let estilo=dados.estilo||''; let foto=dados.foto||''; let html=''; if(versaoQR=='simples') html=`<div class="qr-box"><h2>🎤 PEDE AÍ</h2><p>Escaneie e peça sua música</p><img src="${qrImg()}"><p><b>${nome}</b></p></div>`; if(versaoQR=='foto') html=`<div class="qr-box">${foto?`<img src="${foto}" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #22c55e">`:''}<h2>🎤 ${nome}</h2><p>${estilo}</p><img src="${qrImg()}"><p style="font-weight:900">Apoie o músico dê sua caixinha ❤️🎸🎤</p></div>`; if(versaoQR=='mesa') html=`<div class="qr-box mesa"><h1 style="font-size:28px;margin:0">🎤 PEDE AÍ</h1><h2>${nome}</h2><img src="${qrImg()}"><p style="font-size:20px;font-weight:900">📱 APONTE A CÂMERA<br>PEÇA SUA MÚSICA</p><p>Apoie o músico dê sua caixinha ❤️🎸🎤</p></div>`; if(versaoQR=='pb') html=`<div class="qr-box pb"><h2>PEDE AÍ - ${nome}</h2><img src="${qrImg()}"><p>Escaneie para pedir sua música</p></div>`; if(versaoQR=='colorido') html=`<div class="qr-box colorido"><h1>🎤 PEDE AÍ 🎶</h1><h2>${nome}</h2><img src="${qrImg()}"><p style="font-size:20px;font-weight:900">APOIE O MÚSICO<br>DÊ SUA CAIXINHA ❤️🎸🎤</p><p>Escaneie e peça agora!</p></div>`; box.innerHTML=html; }
 function imprimirQR(){ document.getElementById('printArea').innerHTML=document.getElementById('qrPreview').innerHTML; window.print(); }
-
-// 🔑 TROCAR SENHA
-function trocarSenha(){
- let atual=document.getElementById('senhaAtual').value; let nova=document.getElementById('senhaNova').value; let conf=document.getElementById('senhaConf').value;
- if(atual!==dados.senha) return alert('❌ Senha atual errada!');
- if(!nova||nova!==conf) return alert('❌ Nova senha e confirmação não batem!');
- dados.senha=nova; salvar(); alert('✅ Senha trocada com sucesso! Anota: '+nova);
-}
-
+function trocarSenha(){ let atual=document.getElementById('senhaAtual').value; let nova=document.getElementById('senhaNova').value; let conf=document.getElementById('senhaConf').value; if(atual!==dados.senha) return alert('❌ Senha atual errada!'); if(!nova||nova!==conf) return alert('❌ Nova senha e confirmação não batem!'); dados.senha=nova; salvar(); alert('✅ Senha trocada! Anota: '+nova); }
 function abrir(qual){
  document.getElementById('menuDono').classList.add('hidden');document.getElementById('tela').classList.remove('hidden');
  let c=document.getElementById('conteudo');let h='';
- if(qual=='mestre')h=`<div class=card><h3>👑 PAINEL MESTRE - Só você vê</h3><div style="text-align:center;background:linear-gradient(90deg,#eab308,#f97316);color:#111;padding:20px;border-radius:16px"><h1 style="font-size:48px;margin:0">${musicos.length}</h1><p style="font-weight:800;margin:0">MÚSICOS CADASTRADOS<br>COMPRANDO O SISTEMA</p></div><h3>Lista:</h3><div>${musicos.map(m=>`<div class=item><span><b>${m.nome}</b><br>@${m.usuario} • ${m.cidade||''}<br><small>Entrou em: ${m.dataCadastro||''} • ${(m.musicas||[]).length} músicas</small></span></div>`).join('')}</div></div>`;
- if(qual=='musico')h=`<div class=card><h3>🎤 Cadastro de Músico - Vai aparecer o SEU nome</h3><div class=center><img id=prevFoto class="foto ${dados.foto?'':'hidden'}" src="${dados.foto||''}"></div><label class=btn-foto>📸 TIRAR FOTO<input type=file accept="image/*" capture="environment" onchange="lerFoto(this)" style="display:none"></label><label class=btn-foto>🖼️ ESCOLHER DA GALERIA<input type=file accept="image/*" onchange="lerFoto(this)" style="display:none"></label><input id=fNome placeholder="Nome artístico - vai aparecer no QR e no app" value="${dados.nome||''}"><input id=fEstilo placeholder="Estilo" value="${dados.estilo||''}"><input id=fCidade placeholder="Cidade" value="${dados.cidade||''}"><input id=fZap placeholder="WhatsApp com DDD" value="${dados.zap||''}"><button onclick="salvarMusico()">SALVAR MÚSICO ✅</button><p style="font-size:12px;text-align:center">Seu usuário: <b>${dados.usuario}</b> - É com ele que você entra.</p></div>`;
+ if(qual=='mestre')h=`<div class=card><h3>👑 PAINEL MESTRE</h3><div style="text-align:center;background:linear-gradient(90deg,#eab308,#f97316);color:#111;padding:20px;border-radius:16px"><h1 style="font-size:48px;margin:0">${musicos.length}</h1><p style="font-weight:800;margin:0">MÚSICOS CADASTRADOS</p></div><div>${musicos.map(m=>`<div class=item><span><b>${m.nome}</b><br>@${m.usuario} • ${m.cidade||''}<br><small>Entrou em: ${m.dataCadastro||''}</small></span></div>`).join('')}</div></div>`;
+ if(qual=='musico')h=`<div class=card><h3>🎤 Cadastro de Músico</h3><div class=center><img id=prevFoto class="foto ${dados.foto?'':'hidden'}" src="${dados.foto||''}"></div><label class=btn-foto>📸 TIRAR FOTO<input type=file accept="image/*" capture="environment" onchange="lerFoto(this)" style="display:none"></label><label class=btn-foto>🖼️ ESCOLHER DA GALERIA<input type=file accept="image/*" onchange="lerFoto(this)" style="display:none"></label><input id=fNome placeholder="Nome artístico" value="${dados.nome||''}"><input id=fEstilo placeholder="Estilo" value="${dados.estilo||''}"><input id=fCidade placeholder="Cidade" value="${dados.cidade||''}"><input id=fZap placeholder="WhatsApp com DDD" value="${dados.zap||''}"><button onclick="salvarMusico()">SALVAR MÚSICO ✅</button></div>`;
  if(qual=='repertorio')h=`<div class=card><h3>🎵 Biblioteca / Repertório de ${dados.nome||''}</h3><input id=nMusica placeholder="Nome da música"><input id=aMusica placeholder="Artista"><button onclick="addMusica()">ADICIONAR MÚSICA ➕</button><div id=listaMus></div></div>`;
  if(qual=='pedidos')h=`<div class=card><h3>🧾 Pedidos ao Vivo 🔔 - ${dados.nome||''}</h3><button onclick="alternarPausar()" class="${dados.aberto?'liberado':'pausado'}">${dados.aberto?'⏸️ PAUSAR PEDIDOS':'▶️ LIBERAR PEDIDOS'}</button><button onclick="tocarSom()">🔔 TESTAR SOM</button><button class=sec onclick="testarAlerta()">🔔 TESTAR ALERTA VISUAL</button><button class=sec onclick="abrir('pedidos')">🔄 ATUALIZAR</button><div id=listaPed></div></div>`;
- if(qual=='pix')h=`<div class=card><h3>💰 Cadastro de PIX - ${dados.nome||''}</h3><input id=pChave placeholder="Chave PIX" value="${dados.pix||''}"><input id=pNomePix placeholder="Nome que aparece no PIX" value="${dados.nomePix||''}"><input id=pCidadePix placeholder="Cidade" value="${dados.cidade||''}"><button onclick="salvarPix()">SALVAR MEU PIX ✅</button><p>${dados.pix?'✅ PIX salvo: '+dados.pix:'⚠️ PIX EM BRANCO'}</p></div>`;
- if(qual=='qr')h=`<div class=card><h3>📷 QR Code / Imprimir - ${dados.nome||''}</h3><p>O QR já sai com o SEU nome, não o do André!</p><button onclick="trocarVersaoQR('simples')">1️⃣ SIMPLES</button><button class=sec onclick="trocarVersaoQR('foto')">2️⃣ COM FOTO + FRASE</button><button class=sec onclick="trocarVersaoQR('mesa')">3️⃣ CARTAZ DE MESA</button><button class=sec onclick="trocarVersaoQR('pb')">4️⃣ PRETO E BRANCO</button><button class=sec onclick="trocarVersaoQR('colorido')">5️⃣ COLORIDO GRANDE</button><div id=qrPreview></div><button onclick="imprimirQR()">🖨️ IMPRIMIR ESSA VERSÃO</button></div><div id=printArea></div>`;
+ if(qual=='pix')h=`<div class=card><h3>💰 Cadastro de PIX</h3><input id=pChave placeholder="Chave PIX" value="${dados.pix||''}"><input id=pNomePix placeholder="Nome que aparece no PIX" value="${dados.nomePix||''}"><input id=pCidadePix placeholder="Cidade" value="${dados.cidade||''}"><button onclick="salvarPix()">SALVAR MEU PIX ✅</button><p>${dados.pix?'✅ PIX salvo: '+dados.pix:'⚠️ PIX EM BRANCO'}</p></div>`;
+ if(qual=='qr')h=`<div class=card><h3>📷 QR Code / Imprimir - ${dados.nome||''}</h3><button onclick="trocarVersaoQR('simples')">1️⃣ SIMPLES</button><button class=sec onclick="trocarVersaoQR('foto')">2️⃣ COM FOTO + FRASE</button><button class=sec onclick="trocarVersaoQR('mesa')">3️⃣ CARTAZ DE MESA</button><button class=sec onclick="trocarVersaoQR('pb')">4️⃣ PRETO E BRANCO</button><button class=sec onclick="trocarVersaoQR('colorido')">5️⃣ COLORIDO GRANDE</button><div id=qrPreview></div><button onclick="imprimirQR()">🖨️ IMPRIMIR ESSA VERSÃO</button></div><div id=printArea></div>`;
  if(qual=='bkp')h=`<div class=card><h3>💾 BKP Importar / Exportar</h3><button onclick="exportar()">⬇ EXPORTAR BKP</button><input type=file id=arqBkp accept=".json"><button class=sec onclick="importar()">⬆ IMPORTAR BKP</button></div>`;
  if(qual=='instalador')h=`<div class=card><h3>📲 Instalador</h3><p><b>Android:</b> 3 pontinhos > Adicionar à tela inicial<br><br><b>iPhone:</b> Compartilhar > Adicionar à Tela de Início</p><button onclick="compartilharLink()">COPIAR LINK DO APP</button></div>`;
  if(qual=='compartilhar')h=`<div class=card><h3>🔗 Compartilhar - ${dados.nome||''}</h3><p style="text-align:center"><b>Apoie o músico dê sua caixinha ❤️🎸🎤</b><br><br>${location.href.split('?')[0]}</p><button onclick="compartilharLink()">COPIAR LINK</button><button class=sec onclick="zapCompartilhar()">COMPARTILHAR NO WHATSAPP</button></div>`;
  if(qual=='temas'){h=`<div class=card><h3>🎨 10 Temas</h3><div class=grid>`;temas.forEach((t,i)=>{h+=`<div class=tema style="background:linear-gradient(90deg,${t[1]},${t[2]})" onclick="trocarTema(${i})">Tema ${i+1}</div>`});h+=`</div></div>`;}
- if(qual=='premium')h=`<div class=card><h3>⭐ Premium</h3><p>✅ Pedidos ilimitados<br>✅ Sem anúncio<br>✅ Destaque no topo</p><button onclick="alert('Premium em breve!')">QUERO SER PREMIUM ⭐</button></div>`;
- if(qual=='config')h=`<div class=card><h3>⚙️ Config / Trocar Senha - ${dados.nome||''}</h3><p>Caixinhas: <b>5, 10, 20, 50, 100 e LIVRE</b></p><label><input type=checkbox id=vAberto ${dados.aberto?'checked':''} style="width:auto"> Pedidos abertos</label><br><label><input type=checkbox id=vSom ${dados.som?'checked':''} style="width:auto"> 🔔 Som + Alerta visual</label><button onclick="salvarConfig()">SALVAR CONFIG ✅</button><hr><h3>🔑 Trocar Minha Senha</h3><input id=senhaAtual type=password placeholder="Senha atual"><input id=senhaNova type=password placeholder="Nova senha"><input id=senhaConf type=password placeholder="Confirme a nova senha"><button onclick="trocarSenha()">TROCAR MINHA SENHA 🔑</button><p style="font-size:12px">Você e qualquer músico conseguem trocar a senha aqui, sem precisar de ninguém.</p><button class=sec onclick="testarAlerta()">🔔 TESTAR ALERTA VISUAL</button><button class=sec onclick="if(confirm('Limpar músicas já pedidas hoje?')){dados.pedidasHoje=[];salvar();alert('Limpinho!')}">🧹 LIMPAR JÁ PEDIDAS HOJE</button></div>`;
+ if(qual=='premium')h=`<div class=card><h3>⭐ Premium</h3><p>✅ Pedidos ilimitados<br>✅ Sem anúncio</p><button onclick="alert('Premium em breve!')">QUERO SER PREMIUM ⭐</button></div>`;
+ if(qual=='config')h=`<div class=card><h3>⚙️ Config / Trocar Senha</h3><label><input type=checkbox id=vAberto ${dados.aberto?'checked':''} style="width:auto"> Pedidos abertos</label><br><label><input type=checkbox id=vSom ${dados.som?'checked':''} style="width:auto"> 🔔 Som + Alerta visual</label><button onclick="salvarConfig()">SALVAR CONFIG ✅</button><hr><h3>🔑 Trocar Minha Senha</h3><input id=senhaAtual type=password placeholder="Senha atual"><input id=senhaNova type=password placeholder="Nova senha"><input id=senhaConf type=password placeholder="Confirme a nova senha"><button onclick="trocarSenha()">TROCAR MINHA SENHA 🔑</button><button class=sec onclick="testarAlerta()">🔔 TESTAR ALERTA VISUAL</button><button class=sec onclick="if(confirm('Limpar músicas já pedidas hoje?')){dados.pedidasHoje=[];salvar();alert('Limpinho!')}">🧹 LIMPAR JÁ PEDIDAS HOJE</button></div>`;
  c.innerHTML=h; if(qual=='repertorio')renderMusicas(); if(qual=='pedidos')renderPedidos(); if(qual=='qr')renderQR();
 }
 function voltar(){document.getElementById('tela').classList.add('hidden');document.getElementById('menuDono').classList.remove('hidden');atualizarTopo();}
-function salvarMusico(){dados.nome=document.getElementById('fNome').value;dados.estilo=document.getElementById('fEstilo').value;dados.cidade=document.getElementById('fCidade').value;dados.zap=document.getElementById('fZap').value;dados.foto=fotoTemp;salvar();alert('Salvo! Agora em todo lugar vai aparecer: '+dados.nome);voltar();}
+function salvarMusico(){dados.nome=document.getElementById('fNome').value;dados.estilo=document.getElementById('fEstilo').value;dados.cidade=document.getElementById('fCidade').value;dados.zap=document.getElementById('fZap').value;dados.foto=fotoTemp;salvar();alert('Salvo! Agora vai aparecer: '+dados.nome);voltar();}
 function addMusica(){let n=document.getElementById('nMusica').value;let a=document.getElementById('aMusica').value;if(!n)return alert('Escreve a música');if(!dados.musicas)dados.musicas=[];dados.musicas.push({n,a});salvar();renderMusicas();}
 function renderMusicas(){let d=document.getElementById('listaMus');if(!d)return;d.innerHTML=(dados.musicas||[]).map((m,i)=>{let ja=jaPedidaHoje(m.n);return `<div class=item><span>${m.n} - ${m.a} ${ja?'<span class="badge badge-ja">JÁ PEDIDA HOJE ✅</span>':''}</span><button style="width:auto;padding:6px 12px;background:#ef4444" onclick="delMusica(${i})">X</button></div>`}).join('')||'Nenhuma música ainda';}
 function delMusica(i){dados.musicas.splice(i,1);salvar();renderMusicas();}
-function renderPedidos(){let d=document.getElementById('listaPed');if(!d)return;d.innerHTML=(dados.pedidos||[]).map((p,i)=>`<div class=item><span><b>${p.cliente}</b><br>${p.musica}<br>Caixinha: ${p.caixinha}<br><small>${p.data}</small></span><button style="width:auto" onclick="tocada(${i})">TOCOU ✅</button></div>`).join('')||'Nenhum pedido ainda';}
+function renderPedidos(){let d=document.getElementById('listaPed');if(!d)return;d.innerHTML=(dados.pedidos||[]).map((p,i)=>`<div class=item style="display:block"><b>${p.cliente}</b> pediu <b>${p.musica}</b><br>${p.paraQuem?`🎁 <b>Pra: ${p.paraQuem}</b><br>`:''}${p.recado?`<div class="recado-box">💌 <b>Recado:</b> ${p.recado}</div>`:''}Caixinha: ${p.caixinha}<br><small>${p.data}</small><br><button style="width:auto;margin-top:8px" onclick="tocada(${i})">TOCOU ✅</button></div>`).join('')||'Nenhum pedido ainda';}
 function tocada(i){dados.pedidos.splice(i,1);salvar();ultimoTotal=dados.pedidos.length;renderPedidos();}
 function salvarPix(){dados.pix=document.getElementById('pChave').value;dados.nomePix=document.getElementById('pNomePix').value;dados.cidade=document.getElementById('pCidadePix').value;salvar();alert('PIX salvo!');}
 function salvarConfig(){dados.aberto=document.getElementById('vAberto').checked;dados.som=document.getElementById('vSom').checked;salvar();alert('Salvo!');voltar();}
@@ -215,21 +215,22 @@ function exportar(){let blob=new Blob([JSON.stringify(musicos)],{type:'applicati
 function importar(){let f=document.getElementById('arqBkp').files[0];if(!f)return alert('Escolhe o arquivo');let r=new FileReader();r.onload=()=>{musicos=JSON.parse(r.result);dados=musicos.find(m=>m.usuario===usuarioAtual)||musicos[0];salvar();alert('BKP importado!');voltar();};r.readAsText(f);}
 function compartilharLink(){navigator.clipboard.writeText(location.href.split('?')[0]);alert('Link copiado!');}
 function zapCompartilhar(){window.open('https://wa.me/?text='+encodeURIComponent('Apoie o músico dê sua caixinha ❤️🎸🎤 Pede sua música aqui! '+location.href.split('?')[0]));}
-function verComoPublico(){document.getElementById('menuDono').classList.add('hidden');document.getElementById('publico').classList.remove('hidden');document.getElementById('pNome').innerText='🎤 '+(dados.nome||'Músico');document.getElementById('pInfo').innerText=(dados.estilo||'')+' • '+(dados.cidade||'');document.getElementById('pAberto').innerText=dados.aberto?'🟢 Aceitando pedidos':'🔴 Pedidos PAUSADOS no momento';let f=document.getElementById('pFoto');if(dados.foto){f.src=dados.foto;f.classList.remove('hidden')}else{f.classList.add('hidden')}document.getElementById('listaPublico').innerHTML=(dados.musicas||[]).map(m=>{let ja=jaPedidaHoje(m.n);return `<div class=item><span>${m.n} - ${m.a} ${ja?'<span class="badge badge-ja">JÁ PEDIDA HOJE ✅</span>':''}</span></div>`}).join('')||'Repertório em breve';}
+function verComoPublico(){document.getElementById('menuDono').classList.add('hidden');document.getElementById('publico').classList.remove('hidden');document.getElementById('pNome').innerText='🎤 '+(dados.nome||'Músico');document.getElementById('pInfo').innerText=(dados.estilo||'')+' • '+(dados.cidade||'');document.getElementById('pAberto').innerText=dados.aberto?'🟢 Aceitando pedidos':'🔴 Pedidos PAUSADOS no momento';let f=document.getElementById('pFoto');if(dados.foto){f.src=dados.foto;f.classList.remove('hidden')}else{f.classList.add('hidden')}document.getElementById('listaPublico').innerHTML=(dados.musicas||[]).map(m=>{let ja=jaPedidaHoje(m.n);return `<div class=item><span>${m.n} - ${m.a} ${ja?'<span class="badge badge-ja">JÁ PEDIDA HOJE ✅</span>':''}</span><button class="escolher" onclick="escolherMusica('${m.n.replace(/'/g,"\\'")}')">➡️ ESCOLHER</button></div>`}).join('')||'Repertório em breve';}
 function voltarPublico(){document.getElementById('publico').classList.add('hidden');if(souDono){document.getElementById('menuDono').classList.remove('hidden');}else{ sair(); }}
 function pedirMusica(){
- let cli=document.getElementById('nomeCliente').value;let mus=document.getElementById('musicaPedido').value;
- if(!cli||!mus)return alert('Preenche nome e música');
- if(!dados.aberto)return alert('⛔ Pedidos PAUSADOS no momento!');
- if(jaPedidaHoje(mus))return alert('⛔ Essa música JÁ FOI PEDIDA HOJE!\nEscolhe outra, por favor 🎶');
+ let mus=document.getElementById('musicaPedido').value; let cli=document.getElementById('nomeCliente').value; let paraQuem=document.getElementById('paraQuem').value; let recado=document.getElementById('recado').value;
+ if(!mus) return alert('🎵 Escolhe a música primeiro! Clica na setinha ➡️ lá no repertório ou digita.');
+ if(!cli) return alert('🙋 Agora coloca seu nome!');
+ if(!dados.aberto) return alert('⛔ Pedidos PAUSADOS no momento!');
+ if(jaPedidaHoje(mus)) return alert('⛔ Essa música JÁ FOI PEDIDA HOJE!\nEscolhe outra, por favor 🎶');
  let valorFinal=caixinha;
  if(caixinha=='LIVRE')valorFinal='LIVRE R$ '+(document.getElementById('valorLivre').value||'');
  if(!caixinha)valorFinal='Sem caixinha (pedido gratuito) 💛';
  if(!dados.pedidos)dados.pedidos=[]; if(!dados.pedidasHoje)dados.pedidasHoje=[];
- dados.pedidos.push({cliente:cli,musica:mus,caixinha:valorFinal,data:new Date().toLocaleString()});
+ dados.pedidos.push({cliente:cli,musica:mus,paraQuem:paraQuem,recado:recado,caixinha:valorFinal,data:new Date().toLocaleString()});
  dados.pedidasHoje.push(mus); dados.dataPedidas=hoje;
- salvar();ultimoTotal=dados.pedidos.length;mostrarAlertaPedido({cliente:cli,musica:mus,caixinha:valorFinal});
- document.getElementById('msgPedido').innerHTML=`✅ Pedido enviado para <b>${dados.nome}</b>!<br><b>${mus}</b> já está marcada como pedida hoje.<br><b>Caixinha:</b> ${valorFinal}<br>${caixinha?`<b>PIX:</b> ${dados.pix||''} - ${dados.nomePix||''}`:'Obrigado por pedir! Apoie o músico dê sua caixinha quando puder ❤️🎸🎤'}`;
+ salvar();ultimoTotal=dados.pedidos.length;mostrarAlertaPedido({cliente:cli,musica:mus,paraQuem:paraQuem,recado:recado,caixinha:valorFinal});
+ document.getElementById('msgPedido').innerHTML=`✅ Pedido enviado para <b>${dados.nome}</b>!<br>🎵 <b>${mus}</b>${paraQuem?`<br>🎁 Pra: <b>${paraQuem}</b>`:''}${recado?`<br>💌 Recado: <i>${recado}</i>`:''}<br><b>Caixinha:</b> ${valorFinal}`;
  verComoPublico();
 }
 atualizarTopo();
