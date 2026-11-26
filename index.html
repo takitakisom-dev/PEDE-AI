@@ -9,39 +9,59 @@
 *{box-sizing:border-box;font-family:system-ui,Arial,sans-serif}
 body{background:radial-gradient(600px 300px at 50% -50px,#2e1065,transparent),var(--bg);color:var(--txt);margin:0;padding:14px;padding-bottom:40px}
 .topo{text-align:center;padding:18px 10px 6px}
-.topo h1{font-size:30px;margin:0;line-height:1.1}
+.topo h1{font-size:30px;margin:0}
 .topo h1 span{background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.topo p{opacity:.85;margin:6px 0}
 .card{background:var(--card);border:1px solid #ffffff18;border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 10px 30px #0005}
 button{width:100%;padding:14px;border:0;border-radius:14px;background:linear-gradient(90deg,var(--acc),var(--acc2));color:#fff;font-weight:800;font-size:16px;margin:6px 0;cursor:pointer}
 button.sec{background:#2a2a3d}
 button.cx{background:#262640;border:2px solid #444}
-button.cx.ativo{background:linear-gradient(90deg,var(--acc),var(--acc2));border-color:#fff;transform:scale(1.03)}
+button.cx.ativo{background:linear-gradient(90deg,var(--acc),var(--acc2));border-color:#fff}
+button.pausado{background:linear-gradient(90deg,#ef4444,#f97316)}
+button.liberado{background:linear-gradient(90deg,#22c55e,#14b8a6)}
 input,select{width:100%;padding:13px;border-radius:12px;border:1px solid #444;background:#111;color:#fff;margin:6px 0;font-size:15px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid button{font-size:14px;padding:18px 8px;line-height:1.3;background:#262640;border:1px solid #ffffff15}
+.grid button{font-size:14px;padding:18px 8px;background:#262640;border:1px solid #ffffff15}
 .grid button b{display:block;font-size:22px}
 .hidden{display:none}
 .item{background:#111;padding:12px;border-radius:12px;margin:7px 0;display:flex;justify-content:space-between;gap:8px;align-items:center}
 .cx-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.cx-grid button{padding:14px 4px;font-size:15px}
-.frase{background:linear-gradient(135deg,#fef08a,#fde68a);color:#111;padding:16px;border-radius:16px;text-align:center;font-weight:900;font-size:19px;line-height:1.3;margin:12px 0;box-shadow:0 8px 20px #facc1544}
+.cx-grid button{padding:14px 4px}
+.frase{background:linear-gradient(135deg,#fef08a,#fde68a);color:#111;padding:16px;border-radius:16px;text-align:center;font-weight:900;font-size:19px;line-height:1.3;margin:12px 0}
 .frase small{display:block;font-weight:600;font-size:13px;margin-top:6px}
 .tema{padding:14px;border-radius:12px;text-align:center;cursor:pointer;color:#fff;font-weight:800}
 .badge{display:inline-block;background:var(--acc);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:800}
+.badge-ja{background:#eab308;color:#111}
 .foto{width:88px;height:88px;border-radius:50%;object-fit:cover;border:3px solid var(--acc);display:block;margin:0 auto 8px}
 .center{text-align:center}
 </style>
 </head>
 <body>
 
-<div class="topo">
-<h1>🎤 PEDE <span>AÍ</span></h1>
-<p id="nomeTopo">Seu show, seu repertório, sua caixinha</p>
-<p><span class="badge" id="statusLoja">🟢 Pedidos ABERTOS</span></p>
+<!-- 🔐 TELA DE LOGIN -->
+<div id="login">
+<div class="topo"><h1>🎤 PEDE <span>AÍ</span></h1><p>Apoie o músico dê sua caixinha ❤️🎸🎤</p></div>
+<div class="card center"><h3>Quem é você?</h3>
+<button onclick="entrarPublico()">🎵 SOU PÚBLICO<br><span style="font-weight:400;font-size:13px">Quero pedir música</span></button>
+<button class="sec" onclick="mostrarLoginDono()">🎤 SOU DONO / MÚSICO<br><span style="font-weight:400;font-size:13px">Entrar no menu do dono</span></button>
+<div id="boxDono" class="hidden" style="text-align:left;margin-top:10px">
+<input id="loginUser" placeholder="Usuário do dono">
+<input id="loginPass" type="password" placeholder="Senha do dono">
+<button onclick="fazerLogin()">ENTRAR COMO DONO 🔐</button>
+<p style="font-size:12px;opacity:.8;text-align:center">Login Mestre:<br><b>Usuário: ANDRE</b><br><b>Senha: PEDEAI123</b></p>
+<p id="erroLogin" style="color:#f87171;font-weight:800;text-align:center"></p>
+</div>
+</div>
 </div>
 
-<!-- MENU DO DONO -->
+<!-- APP -->
+<div id="app" class="hidden">
+<div class="topo"><h1>🎤 PEDE <span>AÍ</span></h1><p id="nomeTopo">Seu show, seu repertório, sua caixinha</p><p><span class="badge" id="statusLoja">🟢 Pedidos ABERTOS</span></p></div>
+
+<!-- BOTÃO PAUSAR / LIBERAR - SEMPRE VISÍVEL PRO DONO -->
+<div id="boxPausar" class="hidden">
+<button id="btnPausar" onclick="alternarPausar()">⏸️ PAUSAR PEDIDOS</button>
+</div>
+
 <div id="menuDono">
 <h3 style="text-align:center">MENU DO DONO ⭐</h3>
 <div class="grid">
@@ -57,31 +77,18 @@ input,select{width:100%;padding:13px;border-radius:12px;border:1px solid #444;ba
 <button onclick="abrir('config')"><b>⚙️</b>Config /<br>Caixinha</button>
 </div>
 <button class="sec" onclick="verComoPublico()">👀 VER COMO O PÚBLICO VÊ</button>
+<button class="sec" onclick="sair()">🚪 SAIR / VOLTAR PRO LOGIN</button>
 </div>
 
-<!-- TELAS DO DONO -->
-<div id="tela" class="hidden">
-<button class="sec" onclick="voltar()">⬅ VOLTAR AO MENU</button>
-<div id="conteudo"></div>
-</div>
+<div id="tela" class="hidden"><button class="sec" onclick="voltar()">⬅ VOLTAR AO MENU</button><div id="conteudo"></div></div>
 
-<!-- TELA PÚBLICO -->
 <div id="publico" class="hidden">
 <button class="sec" onclick="voltarPublico()">⬅ VOLTAR</button>
-<div class="card center">
-<img id="pFoto" class="foto hidden" src="">
-<h2 id="pNome" style="margin:4px 0">🎤 Músico</h2>
-<p id="pInfo" style="opacity:.85"></p>
-<p><span class="badge" id="pAberto"></span></p>
-</div>
-
-<div class="card">
-<h3 style="margin-top:0">🎵 Peça sua música</h3>
+<div class="card center"><img id="pFoto" class="foto hidden"><h2 id="pNome" style="margin:4px 0">🎤 Músico</h2><p id="pInfo"></p><p><span class="badge" id="pAberto"></span></p></div>
+<div class="card"><h3 style="margin-top:0">🎵 Peça sua música</h3>
 <input id="nomeCliente" placeholder="Seu nome">
 <input id="musicaPedido" placeholder="Qual música? Ex: Evidências">
-
 <div class="frase">Apoie o músico dê sua caixinha ❤️🎸🎤<small>Sua contribuição mantém a música viva 🎶<br>Caixinha NÃO é obrigatória, pode pedir sem contribuir.</small></div>
-
 <p><b>Escolha sua caixinha (opcional):</b></p>
 <div class="cx-grid">
 <button class="cx" onclick="selCx(this,'5')">R$ 5</button>
@@ -92,67 +99,102 @@ input,select{width:100%;padding:13px;border-radius:12px;border:1px solid #444;ba
 <button class="cx" onclick="selCx(this,'LIVRE')">💰 LIVRE</button>
 </div>
 <div id="livreBox" class="hidden"><input id="valorLivre" type="number" placeholder="Digite o valor livre, ex: 7"></div>
-<p style="font-size:13px;opacity:.85">Se não quiser, deixa sem escolher nada e clica em PEDIR.</p>
-<button onclick="pedirMusica()">PEDIR MÚSICA 🎶</button>
-<p id="msgPedido"></p>
+<button onclick="pedirMusica()">PEDIR MÚSICA 🎶</button><p id="msgPedido"></p></div>
+<div class="card"><h3 style="margin-top:0">🎵 Repertório</h3><div id="listaPublico"></div><p style="font-size:12px;opacity:.8">Música com selo AMARELO já foi pedida hoje, não dá pra pedir de novo hoje.</p></div>
 </div>
-<div class="card"><h3 style="margin-top:0">🎵 Repertório</h3><div id="listaPublico"></div></div>
 </div>
 
 <script>
 let dados=JSON.parse(localStorage.getItem('pedeai')||'{}');
 if(!dados.musicas)dados.musicas=[]; if(!dados.pedidos)dados.pedidos=[];
+if(!dados.pedidasHoje)dados.pedidasHoje=[];
 if(dados.aberto===undefined)dados.aberto=true; if(!dados.tema)dados.tema=0;
-let caixinha='';
-function salvar(){localStorage.setItem('pedeai',JSON.stringify(dados));atualizarTopo();}
-function atualizarTopo(){
- document.getElementById('nomeTopo').innerText=dados.nome?('🎤 '+dados.nome+' • '+(dados.cidade||'')):'Seu show, seu repertório, sua caixinha';
- document.getElementById('statusLoja').innerText=dados.aberto?'🟢 Pedidos ABERTOS':'🔴 Pedidos FECHADOS';
- aplicarTema();
+if(dados.som===undefined)dados.som=true;
+let caixinha=''; let fotoTemp=dados.foto||''; let ultimoTotal=dados.pedidos.length; let souDono=false;
+
+// Limpa pedidas de ontem - no outro dia libera tudo
+let hoje=new Date().toDateString();
+if(dados.dataPedidas!==hoje){ dados.pedidasHoje=[]; dados.dataPedidas=hoje; localStorage.setItem('pedeai',JSON.stringify(dados)); }
+
+function norm(s){return (s||'').toLowerCase().trim().replace(/\s+/g,' ');}
+function jaPedidaHoje(musica){ return dados.pedidasHoje.some(m=>norm(m)===norm(musica)); }
+
+// 🔐 LOGIN
+function mostrarLoginDono(){document.getElementById('boxDono').classList.remove('hidden');}
+function fazerLogin(){
+ let u=document.getElementById('loginUser').value.trim().toUpperCase();
+ let p=document.getElementById('loginPass').value.trim();
+ // LOGIN MESTRE
+ if(u==='ANDRE' && p==='PEDEAI123'){ souDono=true; entrarDono(); }
+ else document.getElementById('erroLogin').innerText='❌ Usuário ou senha errado!';
 }
+function entrarPublico(){ souDono=false; document.getElementById('login').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); verComoPublico(); }
+function entrarDono(){ document.getElementById('login').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); document.getElementById('menuDono').classList.remove('hidden'); document.getElementById('boxPausar').classList.remove('hidden'); atualizarTopo(); atualizarBtnPausar(); }
+function sair(){ document.getElementById('app').classList.add('hidden'); document.getElementById('login').classList.remove('hidden'); document.getElementById('menuDono').classList.add('hidden'); document.getElementById('publico').classList.add('hidden'); document.getElementById('tela').classList.add('hidden'); document.getElementById('boxPausar').classList.add('hidden'); }
+
+// ⏸️ PAUSAR / LIBERAR
+function alternarPausar(){ dados.aberto=!dados.aberto; salvar(); atualizarBtnPausar(); alert(dados.aberto?'✅ Pedidos LIBERADOS!':'⏸️ Pedidos PAUSADOS! O público não consegue pedir agora.'); }
+function atualizarBtnPausar(){
+ let b=document.getElementById('btnPausar'); if(!b) return;
+ if(dados.aberto){ b.innerText='⏸️ PAUSAR PEDIDOS'; b.className='liberado'; }
+ else{ b.innerText='▶️ LIBERAR PEDIDOS - ESTÁ PAUSADO'; b.className='pausado'; }
+}
+
+function tocarSom(){ if(!dados.som) return; try{ let ctx=new (window.AudioContext||window.webkitAudioContext)(); let t=ctx.currentTime; [0,0.35,0.7].forEach(d=>{ let o=ctx.createOscillator(),g=ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value=880; o.type='sine'; g.gain.setValueAtTime(0.0001,t+d); g.gain.exponentialRampToValueAtTime(0.4,t+d+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+d+0.3); o.start(t+d); o.stop(t+d+0.32); }); }catch(e){} if(navigator.vibrate) navigator.vibrate([200,100,200,100,200]); }
+setInterval(()=>{ let atual=JSON.parse(localStorage.getItem('pedeai')||'{}'); if(atual.pedidos && atual.pedidos.length>ultimoTotal){ tocarSom(); ultimoTotal=atual.pedidos.length; if(document.getElementById('listaPed')) renderPedidos(); } },3000);
+
+function salvar(){localStorage.setItem('pedeai',JSON.stringify(dados));atualizarTopo();}
+function atualizarTopo(){document.getElementById('nomeTopo').innerText=dados.nome?('🎤 '+dados.nome+' • '+(dados.cidade||'')):'Seu show, seu repertório, sua caixinha';document.getElementById('statusLoja').innerText=dados.aberto?'🟢 Pedidos ABERTOS':'🔴 Pedidos PAUSADOS';document.getElementById('pAberto').innerText=dados.aberto?'🟢 Aceitando pedidos':'🔴 Pedidos PAUSADOS no momento';aplicarTema();atualizarBtnPausar();}
 const temas=[['#0b0b14','#22c55e','#a855f7'],['#000','#e11d48','#f97316'],['#0a1a3a','#3b82f6','#22c55e'],['#1a0a2e','#a855f7','#ec4899'],['#042f2e','#14b8a6','#22c55e'],['#3a0a0a','#f97316','#eab308'],['#111','#eab308','#f97316'],['#fff','#ec4899','#a855f7'],['#0f172a','#f43f5e','#f97316'],['#022c22','#84cc16','#14b8a6']];
 function aplicarTema(){let t=temas[dados.tema||0];document.documentElement.style.setProperty('--bg',t[0]);document.documentElement.style.setProperty('--acc',t[1]);document.documentElement.style.setProperty('--acc2',t[2]);document.body.style.color=t[0]=='#fff'?'#111':'#fff';}
 function selCx(btn,val){document.querySelectorAll('.cx').forEach(b=>b.classList.remove('ativo'));btn.classList.add('ativo');caixinha=val;document.getElementById('livreBox').classList.toggle('hidden',val!=='LIVRE');}
+function lerFoto(input){ let f=input.files[0]; if(!f) return; let r=new FileReader(); r.onload=()=>{ fotoTemp=r.result; let img=document.getElementById('prevFoto'); if(img){img.src=fotoTemp; img.classList.remove('hidden');} }; r.readAsDataURL(f); }
+
 function abrir(qual){
  document.getElementById('menuDono').classList.add('hidden');document.getElementById('tela').classList.remove('hidden');
  let c=document.getElementById('conteudo');let h='';
- if(qual=='musico')h=`<div class=card><h3>🎤 Cadastro de Músico</h3><input id=fNome placeholder="Nome artístico" value="${dados.nome||''}"><input id=fEstilo placeholder="Estilo: Sertanejo, Pagode, Rock..." value="${dados.estilo||''}"><input id=fCidade placeholder="Cidade" value="${dados.cidade||''}"><input id=fZap placeholder="WhatsApp com DDD" value="${dados.zap||''}"><input id=fFoto placeholder="Link da foto" value="${dados.foto||''}"><button onclick="salvarMusico()">SALVAR MÚSICO ✅</button></div>`;
+ if(qual=='musico')h=`<div class=card><h3>🎤 Cadastro de Músico</h3><div class=center><img id=prevFoto class="foto ${dados.foto?'':'hidden'}" src="${dados.foto||''}"></div><label style="display:block;background:#2a2a3d;padding:14px;border-radius:12px;text-align:center;font-weight:800;cursor:pointer">📸 TIRAR FOTO / ESCOLHER DA GALERIA<input type=file accept="image/*" capture="user" onchange="lerFoto(this)" style="display:none"></label><input id=fNome placeholder="Nome artístico" value="${dados.nome||''}"><input id=fEstilo placeholder="Estilo" value="${dados.estilo||''}"><input id=fCidade placeholder="Cidade" value="${dados.cidade||''}"><input id=fZap placeholder="WhatsApp com DDD" value="${dados.zap||''}"><button onclick="salvarMusico()">SALVAR MÚSICO ✅</button></div>`;
  if(qual=='repertorio')h=`<div class=card><h3>🎵 Biblioteca / Repertório</h3><input id=nMusica placeholder="Nome da música"><input id=aMusica placeholder="Artista"><button onclick="addMusica()">ADICIONAR MÚSICA ➕</button><div id=listaMus></div></div>`;
- if(qual=='pedidos')h=`<div class=card><h3>🧾 Pedidos ao Vivo</h3><button class=sec onclick="abrir('pedidos')">🔄 ATUALIZAR</button><div id=listaPed></div></div>`;
+ if(qual=='pedidos')h=`<div class=card><h3>🧾 Pedidos ao Vivo 🔔</h3><button onclick="alternarPausar()" class="${dados.aberto?'liberado':'pausado'}">${dados.aberto?'⏸️ PAUSAR PEDIDOS':'▶️ LIBERAR PEDIDOS'}</button><button onclick="tocarSom()">🔔 TESTAR SOM DO PEDIDO</button><button class=sec onclick="abrir('pedidos')">🔄 ATUALIZAR</button><div id=listaPed></div></div>`;
  if(qual=='pix')h=`<div class=card><h3>💰 Cadastro de PIX</h3><input id=pChave placeholder="Chave PIX" value="${dados.pix||''}"><input id=pNomePix placeholder="Nome que aparece no PIX" value="${dados.nomePix||''}"><input id=pCidadePix placeholder="Cidade" value="${dados.cidade||''}"><button onclick="salvarPix()">SALVAR MEU PIX ✅</button><p>${dados.pix?'✅ PIX salvo: '+dados.pix:'⚠️ PIX EM BRANCO'}</p></div>`;
- if(qual=='bkp')h=`<div class=card><h3>💾 BKP Importar / Exportar</h3><p>Salva tudo: músico, repertório, PIX e pedidos.</p><button onclick="exportar()">⬇ EXPORTAR BKP</button><input type=file id=arqBkp accept=".json"><button class=sec onclick="importar()">⬆ IMPORTAR BKP</button></div>`;
- if(qual=='instalador')h=`<div class=card><h3>📲 Instalador</h3><p><b>Android:</b> 3 pontinhos do Chrome > Adicionar à tela inicial<br><br><b>iPhone:</b> Compartilhar > Adicionar à Tela de Início</p><button onclick="compartilharLink()">COPIAR LINK DO APP</button></div>`;
+ if(qual=='bkp')h=`<div class=card><h3>💾 BKP Importar / Exportar</h3><button onclick="exportar()">⬇ EXPORTAR BKP</button><input type=file id=arqBkp accept=".json"><button class=sec onclick="importar()">⬆ IMPORTAR BKP</button></div>`;
+ if(qual=='instalador')h=`<div class=card><h3>📲 Instalador</h3><p><b>Android:</b> 3 pontinhos > Adicionar à tela inicial<br><br><b>iPhone:</b> Compartilhar > Adicionar à Tela de Início</p><button onclick="compartilharLink()">COPIAR LINK DO APP</button></div>`;
  if(qual=='compartilhar')h=`<div class=card><h3>🔗 Compartilhar</h3><p style="text-align:center"><b>Apoie o músico dê sua caixinha ❤️🎸🎤</b><br><br>${location.href.split('?')[0]}</p><button onclick="compartilharLink()">COPIAR LINK</button><button class=sec onclick="zapCompartilhar()">COMPARTILHAR NO WHATSAPP</button></div>`;
  if(qual=='temas'){h=`<div class=card><h3>🎨 10 Temas</h3><div class=grid>`;temas.forEach((t,i)=>{h+=`<div class=tema style="background:linear-gradient(90deg,${t[1]},${t[2]})" onclick="trocarTema(${i})">Tema ${i+1}</div>`});h+=`</div></div>`;}
- if(qual=='premium')h=`<div class=card><h3>⭐ Premium</h3><p>✅ Pedidos ilimitados<br>✅ Sem anúncio<br>✅ Destaque no topo<br>✅ Relatório de caixinhas</p><button onclick="alert('Premium em breve!')">QUERO SER PREMIUM ⭐</button></div>`;
- if(qual=='config')h=`<div class=card><h3>⚙️ Config / Caixinha</h3><p>Caixinhas do público: <b>5, 10, 20, 50, 100 e LIVRE</b><br>Não são obrigatórias.<br><br>Frase: <b>Apoie o músico dê sua caixinha ❤️🎸🎤</b></p><label><input type=checkbox id=vAberto ${dados.aberto?'checked':''} style="width:auto"> Pedidos abertos</label><button onclick="salvarConfig()">SALVAR CONFIG ✅</button></div>`;
+ if(qual=='premium')h=`<div class=card><h3>⭐ Premium</h3><p>✅ Pedidos ilimitados<br>✅ Sem anúncio<br>✅ Destaque no topo</p><button onclick="alert('Premium em breve!')">QUERO SER PREMIUM ⭐</button></div>`;
+ if(qual=='config')h=`<div class=card><h3>⚙️ Config / Caixinha</h3><p>Caixinhas: <b>5, 10, 20, 50, 100 e LIVRE</b></p><label><input type=checkbox id=vAberto ${dados.aberto?'checked':''} style="width:auto"> Pedidos abertos</label><br><label><input type=checkbox id=vSom ${dados.som?'checked':''} style="width:auto"> 🔔 Som de pedido novo ligado</label><button onclick="salvarConfig()">SALVAR CONFIG ✅</button><button class=sec onclick="tocarSom()">🔔 TESTAR SOM</button><button class=sec onclick="if(confirm('Limpar músicas já pedidas hoje?')){dados.pedidasHoje=[];salvar();alert('Limpinho!')}">🧹 LIMPAR JÁ PEDIDAS HOJE</button></div>`;
  c.innerHTML=h; if(qual=='repertorio')renderMusicas(); if(qual=='pedidos')renderPedidos();
 }
 function voltar(){document.getElementById('tela').classList.add('hidden');document.getElementById('menuDono').classList.remove('hidden');atualizarTopo();}
-function salvarMusico(){dados.nome=document.getElementById('fNome').value;dados.estilo=document.getElementById('fEstilo').value;dados.cidade=document.getElementById('fCidade').value;dados.zap=document.getElementById('fZap').value;dados.foto=document.getElementById('fFoto').value;salvar();alert('Músico salvo!');voltar();}
+function salvarMusico(){dados.nome=document.getElementById('fNome').value;dados.estilo=document.getElementById('fEstilo').value;dados.cidade=document.getElementById('fCidade').value;dados.zap=document.getElementById('fZap').value;dados.foto=fotoTemp;salvar();alert('Músico salvo com foto!');voltar();}
 function addMusica(){let n=document.getElementById('nMusica').value;let a=document.getElementById('aMusica').value;if(!n)return alert('Escreve a música');dados.musicas.push({n,a});salvar();renderMusicas();}
-function renderMusicas(){let d=document.getElementById('listaMus');if(!d)return;d.innerHTML=dados.musicas.map((m,i)=>`<div class=item><span>${m.n} - ${m.a}</span><button style="width:auto;padding:6px 12px;background:#ef4444" onclick="delMusica(${i})">X</button></div>`).join('')||'Nenhuma música ainda';}
+function renderMusicas(){let d=document.getElementById('listaMus');if(!d)return;d.innerHTML=dados.musicas.map((m,i)=>{let ja=jaPedidaHoje(m.n);return `<div class=item><span>${m.n} - ${m.a} ${ja?'<span class="badge badge-ja">JÁ PEDIDA HOJE ✅</span>':''}</span><button style="width:auto;padding:6px 12px;background:#ef4444" onclick="delMusica(${i})">X</button></div>`}).join('')||'Nenhuma música ainda';}
 function delMusica(i){dados.musicas.splice(i,1);salvar();renderMusicas();}
 function renderPedidos(){let d=document.getElementById('listaPed');if(!d)return;d.innerHTML=dados.pedidos.map((p,i)=>`<div class=item><span><b>${p.cliente}</b><br>${p.musica}<br>Caixinha: ${p.caixinha}<br><small>${p.data}</small></span><button style="width:auto" onclick="tocada(${i})">TOCOU ✅</button></div>`).join('')||'Nenhum pedido ainda';}
-function tocada(i){dados.pedidos.splice(i,1);salvar();renderPedidos();}
+function tocada(i){dados.pedidos.splice(i,1);salvar();ultimoTotal=dados.pedidos.length;renderPedidos();}
 function salvarPix(){dados.pix=document.getElementById('pChave').value;dados.nomePix=document.getElementById('pNomePix').value;dados.cidade=document.getElementById('pCidadePix').value;salvar();alert('PIX salvo!');}
-function salvarConfig(){dados.aberto=document.getElementById('vAberto').checked;salvar();alert('Salvo!');voltar();}
+function salvarConfig(){dados.aberto=document.getElementById('vAberto').checked;dados.som=document.getElementById('vSom').checked;salvar();alert('Salvo!');voltar();}
 function trocarTema(i){dados.tema=i;salvar();alert('Tema '+(i+1)+' aplicado!');}
 function exportar(){let blob=new Blob([JSON.stringify(dados)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pedeai-bkp.json';a.click();}
-function importar(){let f=document.getElementById('arqBkp').files[0];if(!f)return alert('Escolhe o arquivo');let r=new FileReader();r.onload=()=>{dados=JSON.parse(r.result);salvar();alert('BKP importado!');voltar();};r.readAsText(f);}
+function importar(){let f=document.getElementById('arqBkp').files[0];if(!f)return alert('Escolhe o arquivo');let r=new FileReader();r.onload=()=>{dados=JSON.parse(r.result);fotoTemp=dados.foto||'';salvar();alert('BKP importado!');voltar();};r.readAsText(f);}
 function compartilharLink(){navigator.clipboard.writeText(location.href.split('?')[0]);alert('Link copiado!');}
 function zapCompartilhar(){window.open('https://wa.me/?text='+encodeURIComponent('Apoie o músico dê sua caixinha ❤️🎸🎤 Pede sua música aqui! '+location.href.split('?')[0]));}
-function verComoPublico(){document.getElementById('menuDono').classList.add('hidden');document.getElementById('publico').classList.remove('hidden');document.getElementById('pNome').innerText='🎤 '+(dados.nome||'Músico');document.getElementById('pInfo').innerText=(dados.estilo||'')+' • '+(dados.cidade||'');document.getElementById('pAberto').innerText=dados.aberto?'🟢 Aceitando pedidos':'🔴 Fechado no momento';let f=document.getElementById('pFoto');if(dados.foto){f.src=dados.foto;f.classList.remove('hidden')}else{f.classList.add('hidden')}document.getElementById('listaPublico').innerHTML=dados.musicas.map(m=>`<div class=item><span>${m.n} - ${m.a}</span></div>`).join('')||'Repertório em breve';}
-function voltarPublico(){document.getElementById('publico').classList.add('hidden');document.getElementById('menuDono').classList.remove('hidden');}
+function verComoPublico(){document.getElementById('menuDono').classList.add('hidden');document.getElementById('publico').classList.remove('hidden');document.getElementById('pNome').innerText='🎤 '+(dados.nome||'Músico');document.getElementById('pInfo').innerText=(dados.estilo||'')+' • '+(dados.cidade||'');document.getElementById('pAberto').innerText=dados.aberto?'🟢 Aceitando pedidos':'🔴 Pedidos PAUSADOS no momento';let f=document.getElementById('pFoto');if(dados.foto){f.src=dados.foto;f.classList.remove('hidden')}else{f.classList.add('hidden')}document.getElementById('listaPublico').innerHTML=dados.musicas.map(m=>{let ja=jaPedidaHoje(m.n);return `<div class=item><span>${m.n} - ${m.a} ${ja?'<span class="badge badge-ja">JÁ PEDIDA HOJE ✅</span>':''}</span></div>`}).join('')||'Repertório em breve';}
+function voltarPublico(){document.getElementById('publico').classList.add('hidden');if(souDono){document.getElementById('menuDono').classList.remove('hidden');}else{ sair(); }}
 function pedirMusica(){
  let cli=document.getElementById('nomeCliente').value;let mus=document.getElementById('musicaPedido').value;
  if(!cli||!mus)return alert('Preenche nome e música');
- if(!dados.aberto)return alert('Pedidos fechados no momento');
+ if(!dados.aberto)return alert('⛔ Pedidos PAUSADOS no momento! Espera o músico liberar.');
+ // 🚫 NÃO REPETE NO DIA
+ if(jaPedidaHoje(mus))return alert('⛔ Essa música JÁ FOI PEDIDA HOJE!\nEscolhe outra, por favor 🎶');
  let valorFinal=caixinha;
  if(caixinha=='LIVRE')valorFinal='LIVRE R$ '+(document.getElementById('valorLivre').value||'');
  if(!caixinha)valorFinal='Sem caixinha (pedido gratuito) 💛';
- dados.pedidos.push({cliente:cli,musica:mus,caixinha:valorFinal,data:new Date().toLocaleString()});salvar();
- document.getElementById('msgPedido').innerHTML=`✅ Pedido enviado!<br><b>Caixinha:</b> ${valorFinal}<br>${caixinha?`<b>PIX:</b> ${dados.pix||''} - ${dados.nomePix||''}<br>Manda o comprovante no WhatsApp: ${dados.zap||''}`:'Obrigado por pedir! Apoie o músico dê sua caixinha quando puder ❤️🎸🎤'}`;
+ dados.pedidos.push({cliente:cli,musica:mus,caixinha:valorFinal,data:new Date().toLocaleString()});
+ dados.pedidasHoje.push(mus); dados.dataPedidas=hoje;
+ salvar();ultimoTotal=dados.pedidos.length;tocarSom();
+ document.getElementById('msgPedido').innerHTML=`✅ Pedido enviado! <b>${mus}</b> já está marcada como pedida hoje.<br><b>Caixinha:</b> ${valorFinal}<br>${caixinha?`<b>PIX:</b> ${dados.pix||''} - ${dados.nomePix||''}`:'Obrigado por pedir! Apoie o músico dê sua caixinha quando puder ❤️🎸🎤'}`;
+ verComoPublico();
 }
 atualizarTopo();
 </script>
