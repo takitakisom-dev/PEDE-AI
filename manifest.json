@@ -1,15 +1,33 @@
 {
-  "name": "PEDE AÍ - Apoie o músico",
+  "name": "PEDE AÍ - André Taki",
   "short_name": "PEDE AÍ",
+  "description": "Peça sua música, colabore com o artista, deixe sua caixinha! André Taki - Caraguatatuba",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0b0b14",
-  "theme_color": "#22c55e",
+  "orientation": "portrait",
+  "background_color": "#14100C",
+  "theme_color": "#14100C",
+  "lang": "pt-BR",
+  "categories": ["music", "entertainment"],
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/727/727269.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/727/727269.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/727/727269.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
