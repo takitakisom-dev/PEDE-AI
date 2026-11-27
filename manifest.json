@@ -1,13 +1,13 @@
 {
-  "name": "PEDE AÍ",
+  "name": "PEDE AÍ - Apoie o músico",
   "short_name": "PEDE AÍ",
-  "start_url": ".",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#f97316",
+  "background_color": "#0b0b14",
+  "theme_color": "#22c55e",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/138/138817.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/727/727269.png",
       "sizes": "512x512",
       "type": "image/png"
     }
